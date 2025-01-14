@@ -22,7 +22,7 @@ let latestSensorData = {
   IdealSoilMoisture: 41
 };
 
-app.post('/api/nodeMCU-data', (req, res) => {
+app.post('/api/sensor-data', (req, res) => {
   const { SoilTemp, AirTemp, Humidity, SoilMoisture } = req.body;
   
   latestSensorData = {

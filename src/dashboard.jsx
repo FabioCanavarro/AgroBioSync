@@ -13,7 +13,7 @@ import {
   ReferenceLine
 } from 'recharts';
 
-const Dashboard = ({ baseUrl = 'http://localhost:3001/api/sensor-data' }) => {
+const Dashboard = ({ baseUrl = '/api/sensor-data' }) => {
   const [sensorData, setSensorData] = useState(null);
   const [error, setError] = useState(null);
   const [historicalData, setHistoricalData] = useState({
