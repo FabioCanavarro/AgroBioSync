@@ -1,51 +1,47 @@
-/* Dashboard.css */
-
-/* Dashboard.css */
-
 .dashboard {
   position: absolute;
-  top: 0px;
+  top: 0;
   height: 100%;
   min-height: 100vh;
-  background-color: #f3f4f6;
+  background-color: var(--color-neutral);
   width: 100%;
-  padding: 5rem 1rem 1rem 1rem; /* Reduced padding for mobile */
+  padding: 5rem 1rem 1rem;
 }
 
 .dashboard-container {
   max-width: 100%;
   margin: 0 auto;
-  background: white;
-  border-radius: 0.5rem; /* Smaller border radius for mobile */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  background: var(--color-white);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px var(--color-shadow);
   overflow: hidden;
 }
 
 .dashboard-content {
-  padding: 1rem; /* Reduced padding for mobile */
+  padding: 1rem;
 }
 
 .dashboard-title {
-  font-size: 1.5rem; /* Smaller font for mobile */
+  font-size: 1.5rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 1.5rem;
   text-align: center;
 }
 
 .factors-grid {
   display: grid;
-  grid-template-columns: 1fr; /* Single column for mobile */
-  gap: 1rem; /* Reduced gap for mobile */
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 .factor-card {
-  background-color: white;
-  border: 1px solid #e5e7eb;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--color-shadow);
   overflow: hidden;
-  height: auto; /* Allow height to adjust */
+  height: auto;
 }
 
 .factor-content {
@@ -53,11 +49,11 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .factor-icon {
-  width: 2.5rem; /* Slightly smaller icons for mobile */
+  width: 2.5rem;
   height: 2.5rem;
   border-radius: 0.375rem;
   display: flex;
@@ -74,7 +70,7 @@
 .icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: white;
+  color: var(--color-white);
 }
 
 .factor-details {
@@ -84,7 +80,7 @@
 .factor-name {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin-bottom: 0.25rem;
 }
 
@@ -92,71 +88,66 @@
   display: flex;
   align-items: baseline;
   gap: 0.75rem;
-  flex-wrap: wrap; /* Allow values to wrap on very small screens */
+  flex-wrap: wrap;
 }
 
 .current-value {
-  font-size: 1.25rem; /* Smaller font for mobile */
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .ideal-value {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #10b981;
+  color: var(--color-secondary);
 }
 
 .factor-chart {
   padding: 1rem;
-  height: 250px; /* Smaller height for mobile */
+  height: 250px;
   width: 100%;
 }
 
-/* Chart responsive styles */
 .recharts-wrapper {
   width: 100% !important;
   height: 100% !important;
-  min-width: 0; /* Allow chart to shrink */
+  min-width: 0;
 }
 
 .recharts-surface {
   width: 100%;
 }
 
-.recharts-cartesian-grid line {
-  stroke: #e5e7eb;
-  stroke-width: 1;
-}
-
+.recharts-cartesian-grid line,
 .recharts-cartesian-axis-line {
-  stroke: #e5e7eb;
+  stroke: var(--color-border);
   stroke-width: 1;
 }
 
 .recharts-cartesian-axis-tick-value {
-  fill: #6b7280;
-  font-size: 10px; /* Smaller font for axis labels */
+  fill: var(--color-text-secondary);
+  font-size: 10px;
 }
 
 .custom-tooltip {
-  background-color: white;
-  border: 1px solid #e5e7eb;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
   border-radius: 0.375rem;
   padding: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--color-shadow);
 }
 
 .tooltip-time {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--color-text-tertiary);
   margin-bottom: 0.25rem;
 }
 
 .tooltip-value {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .error-notification {
@@ -168,10 +159,9 @@
   font-size: 0.875rem;
 }
 
-/* Tablet breakpoint */
 @media (min-width: 768px) {
   .dashboard {
-    padding: 5rem 2rem 2rem 2rem;
+    padding: 5rem 2rem 2rem;
   }
   
   .dashboard-title {
@@ -196,21 +186,17 @@
   }
 }
 
-/* Desktop breakpoint */
 @media (min-width: 1024px) {
   .dashboard {
-    padding: 5rem;
+    padding: 5rem 3rem 3rem;
   }
   
   .factors-grid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
   }
   
-  .dashboard-content {
-    padding: 2rem;
-  }
-  
   .factor-chart {
-    height: 300px;
+    height: 350px;
   }
 }

@@ -3,7 +3,6 @@
   line-height: 1.5;
   font-weight: 400;
   
-  /* Remove dark mode colors */
   color: #213547;
   background-color: #ffffff;
   
@@ -11,28 +10,24 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
   /* Core color palette */
-  --color-primary: #2D5A27;     /* Deep forest green */
-  --color-secondary: #4A8B2C;   /* Vibrant leaf green */
-  --color-accent: #93C572;      /* Soft sage */
-  --color-neutral: #F4F9F1;     /* Light mint */
-  --color-dark: #1A3A1A;        /* Dark forest */
+  --color-primary: #2D5A27;
+  --color-secondary: #4A8B2C;
+  --color-accent: #93C572;
+  --color-neutral: #F4F9F1;
+  --color-dark: #1A3A1A;
   --color-white: #FFFFFF;
-  
-  /* Extended palette for various uses */
-  --color-background: #E8F3E3;  /* Light sage background */
-  --color-surface: #F7FAF5;     /* Off-white surface */
-  --color-border: #C7E1BA;      /* Soft green border */
-  --color-text-primary: #1A3A1A;    /* Dark green text */
-  --color-text-secondary: #4A8B2C;  /* Medium green text */
-  --color-text-tertiary: #6B8E23;   /* Olive text */
-  --color-shadow: rgba(45, 90, 39, 0.15);  /* Green-tinted shadow */
-  
-  /* Glass effects */
+  --color-background: #E8F3E3;
+  --color-surface: #F7FAF5;
+  --color-border: #C7E1BA;
+  --color-text-primary: var(--color-dark);
+  --color-text-secondary: var(--color-secondary);
+  --color-text-tertiary: #6B8E23;
+  --color-shadow: rgba(45, 90, 39, 0.15);
   --color-glass: rgba(255, 255, 255, 0.15);
   --color-glass-border: rgba(255, 255, 255, 0.2);
 }
-
 
 body {
   margin: 0;
@@ -43,13 +38,12 @@ body {
   min-height: 100vh;
   background-color: var(--color-background);
   color: var(--color-text-primary);
-
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-  color: #213547;
+  color: var(--color-text-primary);
 }
 
 button {
@@ -59,30 +53,16 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #f9f9f9;
+  background-color: var(--color-surface);
   cursor: pointer;
   transition: border-color 0.25s;
 }
 
 button:hover {
-  border-color: #646cff;
+  border-color: var(--color-accent);
 }
 
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-
-/* Remove dark mode media query */
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #1a1a1a;
-  }
-} */
