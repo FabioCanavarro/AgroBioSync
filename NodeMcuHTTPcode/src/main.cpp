@@ -59,7 +59,27 @@ const int AirValue = 561;   //replace the value with value when placed in air us
 const int WaterValue = 310; //replace the value with value when placed in water using calibration code 
 
 // needed config for Fertilizer
-const int duration_before_fertlizer_in_hours=72 ;
+const int duration_before_fertlizer_in_hours=72;
+
+// Device operation durations (in milliseconds)
+const unsigned long FERTILIZER_SPRAY_DURATION = 900;  // 0.9 seconds
+const unsigned long WATER_SPRAY_DURATION = 900;       // 0.9 seconds
+const unsigned long GROW_LIGHT_CHECK_INTERVAL = 200;  // 0.2 seconds
+const unsigned long UAH_CHECK_INTERVAL = 200;         // 0.2 seconds
+const unsigned long WATER_PUMP_DURATION = 600;        // 0.6 seconds
+const unsigned long SENSOR_READ_INTERVAL = 2000;      // 2 seconds
+const unsigned long HTTP_POST_INTERVAL = 2000;        // 2 seconds
+
+// Timer variables
+unsigned long lastFertilizerTime = 0;
+unsigned long lastWaterSprayTime = 0;
+unsigned long lastGrowLightCheck = 0;
+unsigned long lastUAHCheck = 0;
+unsigned long lastWaterPumpCheck = 0;
+unsigned long lastSensorRead = 0;
+unsigned long lastHTTPPost = 0;
+unsigned long deviceStartTimes[6] = {0, 0, 0, 0, 0, 0}; // Store start times for each device
+bool deviceActive[6] = {false, false, false, false, false, false}; // Track if devices are active
 
 // Misc
 int soilMoistureValue = 0;
@@ -122,37 +142,51 @@ int read_hygrometer(){
 
 
 void setup() {
-digitalWrite(fertilizer_pump,HIGH);
-digitalWrite(water_pump,HIGH);
-  // Wifi Setup
-  Serial.begin(115200);
-    Serial.println("Ready");
+  // Initialize output pins
+  pinMode(growlight, OUTPUT);
+  pinMode(water_pump, OUTPUT);
+  pinMode(fertilizer_pump, OUTPUT);
+  pinMode(UAH, OUTPUT);
+  
+  // Set initial state for all outputs (HIGH is OFF for pumps)
+  digitalWrite(fertilizer_pump, HIGH);
+  digitalWrite(water_pump, HIGH);
+  digitalWrite(growlight, LOW);
+  digitalWrite(UAH, LOW);
 
-    wm.setConfigPortalTimeout(1000000000);
-    wm.setBreakAfterConfig(false);
-    bool res;
-    res = wm.autoConnect(username.c_str(), password.c_str());
-
-    if(!res) {
-        Serial.println("Failed to connect");
-        ESP.restart();
-    } 
-    else {
-        Serial.println("");
-        Serial.println("WiFi connected.");
-        Serial.println("IP address: ");
-        Serial.println(WiFi.localIP());
-        server.begin();
-    }
-
-  pinMode(growlight,OUTPUT);
-  pinMode(water_pump,OUTPUT);
-  pinMode(fertilizer_pump,OUTPUT);
-  pinMode(UAH,OUTPUT);
+  // Initialize sensors
   sensors.begin();
-  Serial.begin(115200); 
   dht.begin();
-  delay(1000);
+  
+  // Initialize Serial communication
+  Serial.begin(115200);
+  Serial.println("Ready");
+
+  // WiFi Setup
+  wm.setConfigPortalTimeout(1000000000);
+  wm.setBreakAfterConfig(false);
+  bool res = wm.autoConnect(username.c_str(), password.c_str());
+
+  if(!res) {
+    Serial.println("Failed to connect");
+    ESP.restart();
+  } else {
+    Serial.println("");
+    Serial.println("WiFi connected.");
+    Serial.println("IP address: ");
+    Serial.println(WiFi.localIP());
+    server.begin();
+  }
+
+  // Initialize all timers
+  unsigned long currentTime = millis();
+  lastFertilizerTime = currentTime;
+  lastWaterSprayTime = currentTime;
+  lastGrowLightCheck = currentTime;
+  lastUAHCheck = currentTime;
+  lastWaterPumpCheck = currentTime;
+  lastSensorRead = currentTime;
+  lastHTTPPost = currentTime;
 }
 
 void loop() {
@@ -207,159 +241,104 @@ void loop() {
     Serial.print("Failed to read soil temp");
     soilTemp = random(needed_soil_temp - 10, needed_soil_temp + 10);
   }
-// !Please Change so that website display error message
-// Error 
 
-
-  // !Please Change so that website display the timer
-  if (((currentsecond - tempsecond) /3600) >= duration_before_fertlizer_in_hours)
-  {
-    /*
-      this is where the code for spraying it will be
-      turn on spray
-    */
-
-    // !Please Change so that website display the message
-    digitalWrite(fertilizer_pump,LOW);
-
-    Serial.print("Spraying fertilizer.");
-    delay(300);
-
-
-    Serial.print("Spraying fertilizer..");
-    delay(300);
-
-
-    Serial.print("Spraying fertilizer...");
-    tempsecond = currentsecond;
-    digitalWrite(fertilizer_pump,HIGH);
-    /*
-      this is where the code for spraying it will be
-      turn off spray
-    */
-  }
-
-  if ( soilMoisture< needed_moisture_percentage){
-    /*
-      this is where the code for spraying it will be
-      turn on spray
-    */
-  // !Please Change so that website display the message
-    digitalWrite(water_pump,LOW);
-    Serial.print("Spraying water.");
-    delay(300);
-    Serial.print("Spraying water..");  
-    delay(300);
-    Serial.print("Spraying water...");
-    digitalWrite(water_pump,HIGH);
-    /*
-      this is where the code for spraying it will be
-      turn off spray
-    */
-
-  }
-
-
-
-
-
-
-
-
-
-  if (tempC < needed_air_temp){
-    /*
-      Grow light
-    */
-
-    delay(200);
-    digitalWrite(growlight,HIGH);
-    float tempC = dht.readTemperature();
-    
-  }
-  else if (tempC > needed_air_temp){
-    /*
-      Turn off Grow Light
-      Turn on ultrasonic atomizer humidifier for 3 sec
-    */
-    delay(200);
-    digitalWrite(growlight,LOW);
-    float tempC = dht.readTemperature();
-    
-  }
-
-
-  if (soiltempc > needed_soil_temp){
-    // Check if soil temp is too high
-    // Turn on water pump
-    delay(200);
-    digitalWrite(water_pump,HIGH);
-    
-    delay(400);
-    digitalWrite(water_pump,LOW);
-    
-  }
-
-
-
-
-
-  if (hum < needed_humidity_percentage){
-    /*
-      Turn on ultrasonic atomizer humidifier
-    */
-    delay(200);
-    digitalWrite(UAH,HIGH);
-    float hum = dht.readHumidity();
-    
-
-  }
-  else if (hum > needed_humidity_percentage){
-    /*
-      Turn off ultrasonic atomizer humidifier
-      Turn on grow light
-    */
-    delay(200);
-    digitalWrite(UAH,LOW);
-    float hum = dht.readHumidity();
-  }
-
-
-
-  // Create JSON object
-  DynamicJsonDocument doc(200);
-  doc["SoilTemp"] = soilTemp;
-  doc["AirTemp"] = airTemp;
-  doc["Humidity"] = humidity;
-  doc["SoilMoisture"] = soilMoisture;
-
-  String requestBody;
-  serializeJson(doc, requestBody);
-
-  Serial.println("[HTTP] POST...");
-  Serial.println("Request body:");
-  Serial.println(requestBody);
-  
-  int httpCode = http.POST(requestBody);
-
-  if (httpCode > 0) {
-    Serial.printf("[HTTP] POST... code: %d\n", httpCode);
-
-    if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED) {
-      String payload = http.getString();
-      Serial.println("Response payload:");
-      Serial.println(payload);
-    } else {
-      Serial.printf("Server returned non-OK status: %d\n", httpCode);
-      Serial.println("Response headers:");
-      Serial.println(http.getString());
+  // Check if it's time for fertilizer spray
+  if (((currentsecond - tempsecond) /3600) >= duration_before_fertlizer_in_hours) {
+    if (!deviceActive[0]) { // Fertilizer pump not active
+      deviceActive[0] = true;
+      deviceStartTimes[0] = millis();
+      digitalWrite(fertilizer_pump, LOW);
+      Serial.println("Starting fertilizer spray");
+    } else if (millis() - deviceStartTimes[0] >= FERTILIZER_SPRAY_DURATION) {
+      deviceActive[0] = false;
+      digitalWrite(fertilizer_pump, HIGH);
+      tempsecond = currentsecond;
+      Serial.println("Fertilizer spray complete");
     }
-  } else {
-    Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
-  } 
-    delay(2000); 
-    http.end();
-  } else {
-    Serial.println("WiFi Disconnected");
   }
+
+  // Check soil moisture and control water pump
+  if (soilMoisture < needed_moisture_percentage) {
+    if (!deviceActive[1]) { // Water pump not active
+      deviceActive[1] = true;
+      deviceStartTimes[1] = millis();
+      digitalWrite(water_pump, LOW);
+      Serial.println("Starting water spray");
+    } else if (millis() - deviceStartTimes[1] >= WATER_SPRAY_DURATION) {
+      deviceActive[1] = false;
+      digitalWrite(water_pump, HIGH);
+      Serial.println("Water spray complete");
+    }
+  }
+
+  if (millis() - lastGrowLightCheck >= GROW_LIGHT_CHECK_INTERVAL) {
+    lastGrowLightCheck = millis();
+    if (tempC < needed_air_temp){
+      digitalWrite(growlight,HIGH);
+    } else if (tempC > needed_air_temp){
+      digitalWrite(growlight,LOW);
+    }
+  }
+
+  if (millis() - lastUAHCheck >= UAH_CHECK_INTERVAL) {
+    lastUAHCheck = millis();
+    if (hum < needed_humidity_percentage){
+      digitalWrite(UAH,HIGH);
+    } else if (hum > needed_humidity_percentage){
+      digitalWrite(UAH,LOW);
+    }
+  }
+
+  if (millis() - lastWaterPumpCheck >= WATER_PUMP_DURATION) {
+    lastWaterPumpCheck = millis();
+    if (soiltempc > needed_soil_temp){
+      digitalWrite(water_pump,HIGH);
+    } else {
+      digitalWrite(water_pump,LOW);
+    }
+  }
+
+  if (millis() - lastSensorRead >= SENSOR_READ_INTERVAL) {
+    lastSensorRead = millis();
+    // Read sensor values here
+  }
+
+  if (millis() - lastHTTPPost >= HTTP_POST_INTERVAL) {
+    lastHTTPPost = millis();
+    // Create JSON object
+    DynamicJsonDocument doc(200);
+    doc["SoilTemp"] = soilTemp;
+    doc["AirTemp"] = airTemp;
+    doc["Humidity"] = humidity;
+    doc["SoilMoisture"] = soilMoisture;
+
+    String requestBody;
+    serializeJson(doc, requestBody);
+
+    Serial.println("[HTTP] POST...");
+    Serial.println("Request body:");
+    Serial.println(requestBody);
+    
+    int httpCode = http.POST(requestBody);
+
+    if (httpCode > 0) {
+      Serial.printf("[HTTP] POST... code: %d\n", httpCode);
+
+      if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED) {
+        String payload = http.getString();
+        Serial.println("Response payload:");
+        Serial.println(payload);
+      } else {
+        Serial.printf("Server returned non-OK status: %d\n", httpCode);
+        Serial.println("Response headers:");
+        Serial.println(http.getString());
+      }
+    } else {
+      Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
+    }
+    http.end();
+  }
+} else {
+  Serial.println("WiFi Disconnected");
+}
 }
