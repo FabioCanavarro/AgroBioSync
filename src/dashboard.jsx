@@ -13,7 +13,12 @@ import {
   ReferenceLine
 } from 'recharts';
 
-const Dashboard = ({ baseUrl = '/api/sensor-data' }) => {
+const Dashboard = () => {
+  const baseUrl = import.meta.env.VITE_API_BASE 
+    ? `${import.meta.env.VITE_API_BASE}/sensor-data`
+    : '/api/sensor-data';
+
+  const [fetchInterval, setFetchInterval] = useState(500);
   const [sensorData, setSensorData] = useState(null);
   const [error, setError] = useState(null);
   const [historicalData, setHistoricalData] = useState({
@@ -127,11 +132,10 @@ const Dashboard = ({ baseUrl = '/api/sensor-data' }) => {
       }
     };
 
-    fetchData();
-    const interval = setInterval(fetchData, 2000);
+    const interval = setInterval(fetchData, fetchInterval);
 
     return () => clearInterval(interval);
-  }, [baseUrl, sensorData]);
+  }, [baseUrl, sensorData, fetchInterval]);
 
   // Rest of the component remains exactly the same...
   const factors = [
