@@ -6,7 +6,6 @@ import './components/styles/pagestyle.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navbar, HomePage, AboutPage, ContactPage } from './components/navbar';
 import Dashboard from './dashboard';
-import TestAPI from './test-api';
 
 
 const App = () => {
@@ -20,7 +19,6 @@ const App = () => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/dashboard" element={<Dashboard baseUrl="/api/sensor-data" />} />
-            <Route path="/test-api" element={<TestAPI />} />
           </Routes>
         </main>
       </div>
