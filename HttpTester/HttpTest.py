@@ -2,7 +2,7 @@ import requests
 import random
 import time
 
-url = "https://deploy-preview-2--agrobiosync.netlify.app/api/sensor-data"
+url = "https://agrobiosync.netlify.app//api/sensor-data"
 
 for _ in range(109):
     temps = random.randint(20, 30)
