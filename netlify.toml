@@ -1,25 +1,25 @@
 [build]
-  command = "npm run build"
-  functions = "netlify/functions"
-  publish = "dist"
+command = "npm run build"
+functions = "netlify/functions"
+publish = "dist"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-  force = true
+from = "/api/*"
+to = "/.netlify/functions/:splat"
+status = 200
+force = true
 
 [[redirects]]
-  from = "/*"
-  to = "/"
-  status = 200
+from = "/*"
+to = "/"
+status = 200
 
 [dev]
-  framework = "vite"
-  command = "npm run dev"
-  targetPort = 5173
-  functionsPort = 8888
-  autoLaunch = false
+framework = "vite"
+command = "npm run dev"
+targetPort = 5173
+functionsPort = 8888
+autoLaunch = false
 
 [build.environment]
-  NODE_VERSION = "18"
+NODE_VERSION = "18"

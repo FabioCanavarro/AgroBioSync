@@ -62,10 +62,18 @@
   flex-shrink: 0;
 }
 
-.factor-icon.yellow { background-color: #f59e0b; }
-.factor-icon.blue { background-color: #3b82f6; }
-.factor-icon.green { background-color: #10b981; }
-.factor-icon.brown { background-color: #8b4513; }
+.factor-icon.yellow {
+  background-color: #f59e0b;
+}
+.factor-icon.blue {
+  background-color: #3b82f6;
+}
+.factor-icon.green {
+  background-color: #10b981;
+}
+.factor-icon.brown {
+  background-color: #8b4513;
+}
 
 .icon {
   width: 1.25rem;
@@ -163,24 +171,24 @@
   .dashboard {
     padding: 5rem 2rem 2rem;
   }
-  
+
   .dashboard-title {
     font-size: 1.875rem;
   }
-  
+
   .factors-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
-  
+
   .dashboard-content {
     padding: 1.5rem;
   }
-  
+
   .factor-chart {
     height: 300px;
   }
-  
+
   .recharts-cartesian-axis-tick-value {
     font-size: 12px;
   }
@@ -190,12 +198,12 @@
   .dashboard {
     padding: 5rem 3rem 3rem;
   }
-  
+
   .factors-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
   }
-  
+
   .factor-chart {
     height: 350px;
   }

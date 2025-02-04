@@ -1,12 +1,11 @@
-import './dashboard.css';
-import './ChartStyles.css';
-import './components/styles/navstyle.css';
-import './components/styles/homestyle.css';
-import './components/styles/pagestyle.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Navbar, HomePage, AboutPage, ContactPage } from './components/navbar';
-import Dashboard from './dashboard';
-
+import "./dashboard.css";
+import "./ChartStyles.css";
+import "./components/styles/navstyle.css";
+import "./components/styles/homestyle.css";
+import "./components/styles/pagestyle.css";
+import { Navbar, HomePage, AboutPage, ContactPage } from "./components/navbar";
+import Dashboard from "./dashboard";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const App = () => {
   return (
@@ -18,7 +17,10 @@ const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/dashboard" element={<Dashboard baseUrl="/api/sensor-data" />} />
+            <Route
+              path="/dashboard"
+              element={<Dashboard baseUrl="/api/sensor-data" />}
+            />
           </Routes>
         </main>
       </div>

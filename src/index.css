@@ -2,28 +2,28 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  
+
   color: #213547;
   background-color: #ffffff;
-  
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   /* Core color palette */
-  --color-primary: #2D5A27;
-  --color-secondary: #4A8B2C;
-  --color-accent: #93C572;
-  --color-neutral: #F4F9F1;
-  --color-dark: #1A3A1A;
-  --color-white: #FFFFFF;
-  --color-background: #E8F3E3;
-  --color-surface: #F7FAF5;
-  --color-border: #C7E1BA;
+  --color-primary: #2d5a27;
+  --color-secondary: #4a8b2c;
+  --color-accent: #93c572;
+  --color-neutral: #f4f9f1;
+  --color-dark: #1a3a1a;
+  --color-white: #ffffff;
+  --color-background: #e8f3e3;
+  --color-surface: #f7faf5;
+  --color-border: #c7e1ba;
   --color-text-primary: var(--color-dark);
   --color-text-secondary: var(--color-secondary);
-  --color-text-tertiary: #6B8E23;
+  --color-text-tertiary: #6b8e23;
   --color-shadow: rgba(45, 90, 39, 0.15);
   --color-glass: rgba(255, 255, 255, 0.15);
   --color-glass-border: rgba(255, 255, 255, 0.2);
