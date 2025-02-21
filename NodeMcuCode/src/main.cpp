@@ -260,7 +260,7 @@ void controlDevices()
 void sendDataToServer()
 {
     WiFiClientSecure client;
-    client.setInsecure(); // Required for HTTPS
+    client.setInsecure();
     HTTPClient http;
 
     http.begin(client, API_URL);
