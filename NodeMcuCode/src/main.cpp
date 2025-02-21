@@ -259,7 +259,8 @@ void controlDevices()
 
 void sendDataToServer()
 {
-    WiFiClient client;
+    WiFiClientSecure client;
+    client.setInsecure(); // Required for HTTPS
     HTTPClient http;
 
     http.begin(client, API_URL);
@@ -296,6 +297,6 @@ void sendDataToServer()
     {
         Serial.printf("HTTP request failed: %s\n", http.errorToString(httpCode).c_str());
     }
-
+    
     http.end();
 }
