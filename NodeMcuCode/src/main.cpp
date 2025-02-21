@@ -64,7 +64,6 @@ unsigned long lastHTTPPost = 0;
 unsigned long deviceStartTimes[6] = {0};
 bool deviceActive[6] = {false};
 
-
 // Sensor Readings
 struct SensorData
 {
@@ -144,8 +143,8 @@ void initializePins()
     digitalWrite(UAH_PIN, LOW);
 }
 
-
-void setupWiFi(){
+void setupWiFi()
+{
     Serial.println("Connecting to WiFi");
     wifiManager.setConfigPortalTimeout(1000000000);
     wifiManager.setBreakAfterConfig(false);
@@ -297,6 +296,6 @@ void sendDataToServer()
     {
         Serial.printf("HTTP request failed: %s\n", http.errorToString(httpCode).c_str());
     }
-    
+
     http.end();
 }
