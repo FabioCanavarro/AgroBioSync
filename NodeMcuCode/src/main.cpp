@@ -7,7 +7,7 @@ Todo:
 
 /*
 command:
-    cd NodeMcuHTTPcode; platformio.exe run --target upload; platformio.exe device monitor --baud 115200
+    cd NodeMcuHTTPcode; platformio.exe run --target upload; platformio.exe device monitor --baud 115200, cd ../
 */
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
@@ -64,6 +64,7 @@ unsigned long lastHTTPPost = 0;
 unsigned long deviceStartTimes[6] = {0};
 bool deviceActive[6] = {false};
 
+
 // Sensor Readings
 struct SensorData
 {
@@ -74,7 +75,7 @@ struct SensorData
 } sensorData;
 
 // Network Configuration
-const char *API_URL = "http://localhost:3001/api/nodeMCU-data";
+const char *API_URL = "https://agrobiosync.netlify.app//api/sensor-data";
 const char *WIFI_SSID = "AgroBioSync";
 const char *WIFI_PASSWORD = "GreenSync";
 WiFiManager wifiManager;
@@ -92,10 +93,13 @@ void sendDataToServer();
 void setup()
 {
     Serial.begin(115200);
+    Serial.println("Starting NodeMCU \n");
+    Serial.println("Setting up sensors and wifi");
     initializePins();
     setupWiFi();
     sensors.begin();
     dht.begin();
+    Serial.println("Setup complete \n");
 }
 
 void loop()
@@ -103,7 +107,7 @@ void loop()
     if (WiFi.status() != WL_CONNECTED)
     {
         Serial.println("WiFi Disconnected");
-        return;
+        ESP.restart();
     }
 
     unsigned long currentMillis = millis();
@@ -140,8 +144,9 @@ void initializePins()
     digitalWrite(UAH_PIN, LOW);
 }
 
-void setupWiFi()
-{
+
+void setupWiFi(){
+    Serial.println("Connecting to WiFi");
     wifiManager.setConfigPortalTimeout(1000000000);
     wifiManager.setBreakAfterConfig(false);
 
@@ -271,6 +276,9 @@ void sendDataToServer()
     serializeJson(doc, requestBody);
 
     int httpCode = http.POST(requestBody);
+
+    Serial.print("Sending data: ");
+    Serial.println(requestBody);
 
     if (httpCode > 0)
     {
