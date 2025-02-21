@@ -5,6 +5,10 @@ Todo:
 - Show error message on the website
 */
 
+/*
+command:
+    cd NodeMcuHTTPcode; platformio.exe run --target upload; platformio.exe device monitor --baud 115200
+*/
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
