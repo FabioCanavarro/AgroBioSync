@@ -7,7 +7,7 @@ Todo:
 
 /*
 command:
-    cd NodeMcuHTTPcode; platformio.exe run --target upload; platformio.exe device monitor --baud 115200, cd ../
+    cd NodeMcuCode; platformio.exe run --target upload; platformio.exe device monitor --baud 115200; cd ../
 */
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
@@ -185,8 +185,9 @@ void readSensors()
     {
         sensorData.humidity = random(TARGET_HUMIDITY - 10, TARGET_HUMIDITY + 10);
         sensorData.airTemp = random(TARGET_AIR_TEMP - 10, TARGET_AIR_TEMP + 10);
-        Serial.println("Failed to read from DHT sensor");
+        Serial.println("Warning: Failed to read from DHT sensor");
     }
+    
 
     // Read soil sensors
     sensorData.soilTemp = readSoilTemperature();
@@ -195,7 +196,7 @@ void readSensors()
     if (sensorData.soilTemp == 0)
     {
         sensorData.soilTemp = random(TARGET_SOIL_TEMP - 10, TARGET_SOIL_TEMP + 10);
-        Serial.println("Failed to read soil temperature");
+        Serial.println("Warning: Failed to read soil temperature");
     }
 }
 
@@ -212,14 +213,14 @@ void controlDevices()
             deviceActive[0] = true;
             deviceStartTimes[0] = currentMillis;
             digitalWrite(FERTILIZER_PIN, LOW);
-            Serial.println("Starting fertilizer spray");
+            Serial.println("Event: Starting fertilizer spray");
         }
         else if (currentMillis - deviceStartTimes[0] >= FERTILIZER_SPRAY_DURATION)
         {
             deviceActive[0] = false;
             digitalWrite(FERTILIZER_PIN, HIGH);
             lastFertilizerCheck = currentMillis;
-            Serial.println("Fertilizer spray complete");
+            Serial.println("Event: Fertilizer spray complete");
         }
     }
 
@@ -231,13 +232,13 @@ void controlDevices()
             deviceActive[1] = true;
             deviceStartTimes[1] = currentMillis;
             digitalWrite(WATER_PUMP_PIN, LOW);
-            Serial.println("Starting water spray");
+            Serial.println("Event: Starting water spray");
         }
         else if (currentMillis - deviceStartTimes[1] >= WATER_SPRAY_DURATION)
         {
             deviceActive[1] = false;
             digitalWrite(WATER_PUMP_PIN, HIGH);
-            Serial.println("Water spray complete");
+            Serial.println("Event: Water spray complete");
         }
     }
 
