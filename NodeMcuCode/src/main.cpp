@@ -145,20 +145,20 @@ void initializePins()
 
 void setupWiFi()
 {
-    Serial.println("Connecting to WiFi");
+    Serial.println("Event: Connecting to WiFi");
     wifiManager.setConfigPortalTimeout(1000000000);
     wifiManager.setBreakAfterConfig(false);
 
 
     if (!wifiManager.autoConnect(WIFI_SSID, WIFI_PASSWORD))
     {
-        Serial.println("Failed to connect");
+        Serial.println("Warning: Failed to connect");
         ESP.restart();
         wifiManager.resetSettings();
     }
 
-    Serial.println("WiFi connected");
-    Serial.println("IP address: " + WiFi.localIP().toString());
+    Serial.println("Event: WiFi connected");
+    Serial.println("\tIP address: " + WiFi.localIP().toString());
     server.begin();
 }
 
@@ -249,6 +249,11 @@ void controlDevices()
     {
         lastGrowLightCheck = currentMillis;
         digitalWrite(GROW_LIGHT_PIN, sensorData.airTemp < TARGET_AIR_TEMP ? HIGH : LOW);
+        Serial.println("Event: Activating grow light");
+    }
+    else{
+        digitalWrite(GROW_LIGHT_PIN, LOW);
+        Serial.println("Event: Deactivating grow light");
     }
 
     // UAH control
@@ -256,6 +261,11 @@ void controlDevices()
     {
         lastUAHCheck = currentMillis;
         digitalWrite(UAH_PIN, sensorData.humidity < TARGET_HUMIDITY ? HIGH : LOW);
+        Serial.println("Event: Activating UAH");
+    }
+    else{
+        digitalWrite(UAH_PIN, LOW);
+        Serial.println("Event: Deactivating UAH");
     }
 }
 
@@ -280,7 +290,7 @@ void sendDataToServer()
 
     int httpCode = http.POST(requestBody);
 
-    Serial.print("Sending data: ");
+    Serial.print("Event: Sending data: ");
     Serial.println(requestBody);
 
     if (httpCode > 0)
@@ -288,16 +298,16 @@ void sendDataToServer()
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED)
         {
             String payload = http.getString();
-            Serial.println("Data sent successfully");
+            Serial.println("Event: Data sent successfully");
         }
         else
         {
-            Serial.printf("HTTP error: %d\n", httpCode);
+            Serial.printf("Warning: HTTP error: %d\n", httpCode);
         }
     }
     else
     {
-        Serial.printf("HTTP request failed: %s\n", http.errorToString(httpCode).c_str());
+        Serial.printf("Warning: HTTP request failed: %s\n", http.errorToString(httpCode).c_str());
     }
 
     http.end();
