@@ -214,7 +214,7 @@ void controlDevices()
     bool killSwitch = isKillSwitchActive();
 
     if (killSwitch) {
-        Serial.println("Event: Kill switch activated");
+        Serial.println("Important Event: Kill switch activated");
         digitalWrite(FERTILIZER_PIN, HIGH);
         digitalWrite(WATER_PUMP_PIN, HIGH);
         digitalWrite(GROW_LIGHT_PIN, LOW);
@@ -233,14 +233,14 @@ void controlDevices()
             deviceActive[0] = true;
             deviceStartTimes[0] = currentMillis;
             digitalWrite(FERTILIZER_PIN, LOW);
-            Serial.println("Event: Starting fertilizer spray");
+            Serial.println("Important Event: Starting fertilizer spray");
         }
         else if (currentMillis - deviceStartTimes[0] >= FERTILIZER_SPRAY_DURATION)
         {
             deviceActive[0] = false;
             digitalWrite(FERTILIZER_PIN, HIGH);
             lastFertilizerCheck = currentMillis;
-            Serial.println("Event: Fertilizer spray complete");
+            Serial.println("Important Event: Fertilizer spray complete");
         }
     }
 
@@ -252,13 +252,13 @@ void controlDevices()
             deviceActive[1] = true;
             deviceStartTimes[1] = currentMillis;
             digitalWrite(WATER_PUMP_PIN, LOW);
-            Serial.println("Event: Starting water spray");
+            Serial.println("Important Event: Starting water spray");
         }
         else if (currentMillis - deviceStartTimes[1] >= WATER_SPRAY_DURATION)
         {
             deviceActive[1] = false;
             digitalWrite(WATER_PUMP_PIN, HIGH);
-            Serial.println("Event: Water spray complete");
+            Serial.println("Important Event: Water spray complete");
         }
     }
 
@@ -268,13 +268,16 @@ void controlDevices()
         lastGrowLightCheck = currentMillis;
         digitalWrite(GROW_LIGHT_PIN, sensorData.airTemp < TARGET_AIR_TEMP ? HIGH : LOW);
 
-        if (sensorData.airTemp < TARGET_AIR_TEMP)
+        if (sensorData.airTemp < TARGET_AIR_TEMP && !deviceActive[2])
         {
-            Serial.println("Event: Activating grow light");
+            deviceActive[2] = true;
+            Serial.println("Important Event: Activating grow light");
         }
-        else
+        else if (sensorData.airTemp >= TARGET_AIR_TEMP && deviceActive[2])
         {
-            Serial.println("Event: Deactivating grow light");
+
+            deviceActive[2] = false;
+            Serial.println("Important Event: Deactivating grow light");
         }
     }
 
@@ -284,13 +287,16 @@ void controlDevices()
         lastUAHCheck = currentMillis;
         digitalWrite(UAH_PIN, sensorData.humidity < TARGET_HUMIDITY ? HIGH : LOW);
 
-        if (sensorData.humidity < TARGET_HUMIDITY)
+        if (sensorData.humidity < TARGET_HUMIDITY && !deviceActive[3])
         {
-            Serial.println("Event: Activating UAH");
+
+            deviceActive[3] = true;
+            Serial.println("Important Event: Activating UAH");
         }
-        else
+        else if (sensorData.humidity >= TARGET_HUMIDITY && deviceActive[3])
         {
-            Serial.println("Event: Deactivating UAH");
+            deviceActive[3] = false;
+            Serial.println("Important Event: Deactivating UAH");
         }
     }
 
