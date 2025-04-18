@@ -180,7 +180,7 @@ int readSoilMoisture()
 
 bool isKillSwitchActive()
 {
-    return digitalRead(KILL_SWITCH_PIN) == LOW;
+    return digitalRead(KILL_SWITCH_PIN) == HIGH;
 }
 
 void readSensors()
