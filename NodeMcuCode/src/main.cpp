@@ -267,11 +267,15 @@ void controlDevices()
     {
         lastGrowLightCheck = currentMillis;
         digitalWrite(GROW_LIGHT_PIN, sensorData.airTemp < TARGET_AIR_TEMP ? HIGH : LOW);
-        Serial.println("Event: Activating grow light");
-    }
-    else{
-        digitalWrite(GROW_LIGHT_PIN, LOW);
-        Serial.println("Event: Deactivating grow light");
+
+        if (sensorData.airTemp < TARGET_AIR_TEMP)
+        {
+            Serial.println("Event: Activating grow light");
+        }
+        else
+        {
+            Serial.println("Event: Deactivating grow light");
+        }
     }
 
     // UAH control
@@ -279,12 +283,17 @@ void controlDevices()
     {
         lastUAHCheck = currentMillis;
         digitalWrite(UAH_PIN, sensorData.humidity < TARGET_HUMIDITY ? HIGH : LOW);
-        Serial.println("Event: Activating UAH");
+
+        if (sensorData.humidity < TARGET_HUMIDITY)
+        {
+            Serial.println("Event: Activating UAH");
+        }
+        else
+        {
+            Serial.println("Event: Deactivating UAH");
+        }
     }
-    else{
-        digitalWrite(UAH_PIN, LOW);
-        Serial.println("Event: Deactivating UAH");
-    }
+
 }
 
 void sendDataToServer()
