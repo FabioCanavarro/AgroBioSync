@@ -27,6 +27,7 @@ command:
 #define WATER_PUMP_PIN D8 // Water pump pin
 #define FERTILIZER_PIN D7 // Fertilizer pump pin
 #define GROW_LIGHT_PIN D0 // Grow light pin
+#define KILL_SWITCH_PIN D1 // Kill switch pin
 
 // Sensor Setup
 DHT dht(DHTPIN, DHT22);
@@ -88,6 +89,7 @@ void setupWiFi();
 void readSensors();
 void controlDevices();
 void sendDataToServer();
+bool isKillSwitchActive();
 
 void setup()
 {
@@ -176,6 +178,11 @@ int readSoilMoisture()
     return (rand() % 30) + 40;
 }
 
+bool isKillSwitchActive()
+{
+    return digitalRead(KILL_SWITCH_PIN) == LOW;
+}
+
 void readSensors()
 {
     // Read DHT22 sensor
@@ -204,6 +211,17 @@ void readSensors()
 
 void controlDevices()
 {
+    bool killSwitch = isKillSwitchActive();
+
+    if (killSwitch) {
+        Serial.println("Event: Kill switch activated");
+        digitalWrite(FERTILIZER_PIN, HIGH);
+        digitalWrite(WATER_PUMP_PIN, HIGH);
+        digitalWrite(GROW_LIGHT_PIN, LOW);
+        digitalWrite(UAH_PIN, LOW);
+        return;
+    }
+
     unsigned long currentMillis = millis();
 
     // Fertilizer control
