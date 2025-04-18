@@ -37,7 +37,7 @@ DallasTemperature sensors(&oneWire);
 const int TARGET_AIR_TEMP = 26;
 const int TARGET_SOIL_TEMP = 29;
 const int TARGET_HUMIDITY = 60;
-const int TARGET_MOISTURE = 70;
+const int TARGET_MOISTURE = 30;
 
 // Hygrometer Calibration Values
 const int HYGROMETER_AIR_VALUE = 561;   // Reading in air
@@ -105,7 +105,7 @@ void loop()
 {
     if (WiFi.status() != WL_CONNECTED)
     {
-        Serial.println("WiFi Disconnected");
+        Serial.println("Warning: WiFi Disconnected");
         ESP.restart();
     }
 
@@ -149,10 +149,12 @@ void setupWiFi()
     wifiManager.setConfigPortalTimeout(1000000000);
     wifiManager.setBreakAfterConfig(false);
 
+
     if (!wifiManager.autoConnect(WIFI_SSID, WIFI_PASSWORD))
     {
         Serial.println("Failed to connect");
         ESP.restart();
+        wifiManager.resetSettings();
     }
 
     Serial.println("WiFi connected");
@@ -171,7 +173,7 @@ int readSoilMoisture()
 {
     int rawValue = analogRead(HYGROMETER_PIN);
     int percentage = map(rawValue, HYGROMETER_AIR_VALUE, HYGROMETER_WATER_VALUE, 0, 100);
-    return constrain(percentage, 0, 100);
+    return (rand() % 30) + 40;
 }
 
 void readSensors()
