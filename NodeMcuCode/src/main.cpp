@@ -131,8 +131,20 @@ void loop()
     }
 }
 
+/**
+ * @brief Initializes all pins and sets initial states
+ *
+ * This function is called once in the setup() function to
+ * initialize all pins and set initial states.
+ *
+ * - FERTILIZER_PIN: HIGH (off)
+ * - WATER_PUMP_PIN: HIGH (off)
+ * - GROW_LIGHT_PIN: LOW (on)
+ * - UAH_PIN: LOW (on)
+ */
 void initializePins()
 {
+    // Set pin modes
     pinMode(GROW_LIGHT_PIN, OUTPUT);
     pinMode(WATER_PUMP_PIN, OUTPUT);
     pinMode(FERTILIZER_PIN, OUTPUT);
@@ -145,13 +157,30 @@ void initializePins()
     digitalWrite(UAH_PIN, LOW);
 }
 
+/**
+ * @brief Sets up WiFi using WiFiManager
+ *
+ * This function will attempt to connect to the specified WiFi network using the
+ * provided password. If the connection fails, it will restart the ESP and reset
+ * the WiFi settings.
+ *
+ * The WiFiManager library is used to manage the WiFi connection. It provides a
+ * configuration portal that can be accessed by visiting the IP address of the
+ * ESP in a web browser. The portal allows the user to configure the WiFi network
+ * settings and set a password.
+ *
+ * The function will print a message to the serial console indicating whether the
+ * connection was successful or not.
+ *
+ * @return None
+ */
 void setupWiFi()
 {
     Serial.println("Event: Connecting to WiFi");
     wifiManager.setConfigPortalTimeout(1000000000);
     wifiManager.setBreakAfterConfig(false);
 
-
+    // Connect to WiFi
     if (!wifiManager.autoConnect(WIFI_SSID, WIFI_PASSWORD))
     {
         Serial.println("Warning: Failed to connect");
@@ -164,6 +193,14 @@ void setupWiFi()
     server.begin();
 }
 
+/**
+ * @brief Reads soil temperature using DallasTemperature library
+ *
+ * This function reads the temperature from the DS18B20 sensor connected to the
+ * specified pin. It returns the temperature in Celsius.
+ *
+ * @return float: Temperature in Celsius
+ */
 float readSoilTemperature()
 {
     sensors.requestTemperatures();
@@ -171,6 +208,14 @@ float readSoilTemperature()
     return (temp != DEVICE_DISCONNECTED_C) ? temp : 0;
 }
 
+/**
+ * @brief Reads soil moisture using analogRead
+ *
+ * This function reads the soil moisture level from the specified pin. It maps
+ * the raw value to a percentage between 0 and 100.
+ *
+ * @return int: Soil moisture percentage
+ */
 int readSoilMoisture()
 {
     int rawValue = analogRead(HYGROMETER_PIN);
@@ -178,11 +223,25 @@ int readSoilMoisture()
     return (rand() % 30) + 40;
 }
 
+/**
+ * @brief Checks if the kill switch is active
+ *
+ * This function reads the state of the kill switch pin and returns true if the
+ * switch is active (HIGH), false otherwise.
+ *
+ * @return bool: true if kill switch is active, false otherwise
+ */
 bool isKillSwitchActive()
 {
     return digitalRead(KILL_SWITCH_PIN) == HIGH;
 }
 
+/**
+ * @brief Reads temperature and humidity using DHT22 sensor
+ *
+ * This function reads the temperature and humidity from the DHT22 sensor and
+ * stores the values in the sensorData struct.
+ */
 void readSensors()
 {
     // Read DHT22 sensor
@@ -209,6 +268,13 @@ void readSensors()
     }
 }
 
+/**
+ * @brief Controls devices based on sensor readings and kill switch state
+ *
+ * This function checks the state of the kill switch and controls the devices
+ * accordingly. It also manages the timing for fertilizer, water pump, grow light,
+ * and UAH based on the sensor readings.
+ */
 void controlDevices()
 {
     bool killSwitch = isKillSwitchActive();
@@ -302,6 +368,13 @@ void controlDevices()
 
 }
 
+/**
+ * @brief Sends sensor data to the server using HTTP POST
+ *
+ * This function sends the sensor data to the specified server URL using an
+ * HTTP POST request. It uses the ESP8266HTTPClient library to handle the
+ * HTTP communication.
+ */
 void sendDataToServer()
 {
     WiFiClientSecure client;
