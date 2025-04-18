@@ -35,10 +35,10 @@ OneWire oneWire(DS18B20_PIN);
 DallasTemperature sensors(&oneWire);
 
 // Environmental Thresholds
-const int TARGET_AIR_TEMP = 26;
-const int TARGET_SOIL_TEMP = 29;
-const int TARGET_HUMIDITY = 60;
-const int TARGET_MOISTURE = 30;
+const int TARGET_AIR_TEMP = 21;
+const int TARGET_SOIL_TEMP = 23;
+const int TARGET_HUMIDITY = 65;
+const int TARGET_MOISTURE = 45;
 
 // Hygrometer Calibration Values
 const int HYGROMETER_AIR_VALUE = 561;   // Reading in air
