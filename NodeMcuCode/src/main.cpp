@@ -108,6 +108,7 @@ void loop()
     if (WiFi.status() != WL_CONNECTED)
     {
         Serial.println("Warning: WiFi Disconnected");
+        wm.resetSettings();
         ESP.restart();
     }
 
