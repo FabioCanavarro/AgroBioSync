@@ -34,12 +34,13 @@ DHT dht(DHTPIN, DHT22);
 OneWire oneWire(DS18B20_PIN);
 DallasTemperature sensors(&oneWire);
 
+
 // Environmental Thresholds
-const unsigned int16_t TARGET_AIR_TEMP = 21;
-const unsigned int16_t TARGET_SOIL_TEMP = 23;
-const unsigned int8_t TARGET_HUMIDITY = 65; // Should result in a percentage so doing this for reduced size
-const unsigned int8_t TARGET_MOISTURE = 45; // Should result in a percentage so doing this for reduced size
-const unsigned int8_t WIFI_RETRY_LIMIT = 5; // Should result in a percentage so doing this for reduced size
+const unsigned int16 TARGET_AIR_TEMP = 21;
+const unsigned int16 TARGET_SOIL_TEMP = 23;
+const unsigned int8 TARGET_HUMIDITY = 65; // Should result in a percentage so doing this for reduced size
+const unsigned int8 TARGET_MOISTURE = 45; // Should result in a percentage so doing this for reduced size
+const unsigned int8 WIFI_RETRY_LIMIT = 5; // Should result in a percentage so doing this for reduced size
 
 // Hygrometer Calibration Values
 const int HYGROMETER_AIR_VALUE = 561;   // Reading in air
@@ -183,14 +184,29 @@ void setupWiFi()
     wifiManager.setConfigPortalTimeout(1000000000);
     wifiManager.setBreakAfterConfig(false);
 
-    // Connect to WiFi
-    if (!wifiManager.autoConnect(WIFI_SSID, WIFI_PASSWORD))
-    {
-        Serial.println("Warning: Failed to connect");
-        ESP.restart();
-        wifiManager.resetSettings();
+    while (!wifiConnected) {
+        if (!wifiManager.autoConnect(WIFI_SSID, WIFI_PASSWORD))
+        {
+            if (wifiRetryCount < WIFI_RETRY_LIMIT)
+            {
+                Serial.println("Warning: Failed to connect to WiFi, retrying...");
+                wifiConnected = false;
+                wifiRetryCount +=1;
+                continue;
+            }
+            else
+            {
+                Serial.println("Warning: Failed to connect");
+                Serial.println("Important Event: Resetting WiFi settings and restarting ESP...");
+                wifiManager.resetSettings();
+                ESP.restart();
+            }
+        }
+        else 
+        {
+            wifiConnected = true;
+        }
     }
-
     Serial.println("Event: WiFi connected");
     Serial.println("\tIP address: " + WiFi.localIP().toString());
     server.begin();
