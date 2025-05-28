@@ -64,7 +64,7 @@ unsigned long lastWaterPumpCheck = 0;
 unsigned long lastSensorRead = 0;
 unsigned long lastHTTPPost = 0;
 unsigned long deviceStartTimes[6] = {0};
-uint8_t wifiRetryCount = 0;
+int8_t wifiRetryCount = 0;
 bool wifiConnected = false;
 bool deviceActive[6] = {false};
 
@@ -110,9 +110,7 @@ void loop()
 {
     if (WiFi.status() != WL_CONNECTED)
     {
-        Serial.println("Warning: WiFi Disconnected");
-        wifiManager.resetSettings();
-        ESP.restart();
+        setupWiFi();
     }
 
     unsigned long currentMillis = millis();
