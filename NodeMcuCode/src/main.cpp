@@ -35,10 +35,11 @@ OneWire oneWire(DS18B20_PIN);
 DallasTemperature sensors(&oneWire);
 
 // Environmental Thresholds
-const int TARGET_AIR_TEMP = 21;
-const int TARGET_SOIL_TEMP = 23;
-const int TARGET_HUMIDITY = 65;
-const int TARGET_MOISTURE = 45;
+const unsigned int16_t TARGET_AIR_TEMP = 21;
+const unsigned int16_t TARGET_SOIL_TEMP = 23;
+const unsigned int8_t TARGET_HUMIDITY = 65; // Should result in a percentage so doing this for reduced size
+const unsigned int8_t TARGET_MOISTURE = 45; // Should result in a percentage so doing this for reduced size
+const unsigned int8_t WIFI_RETRY_LIMIT = 5; // Should result in a percentage so doing this for reduced size
 
 // Hygrometer Calibration Values
 const int HYGROMETER_AIR_VALUE = 561;   // Reading in air
@@ -63,6 +64,8 @@ unsigned long lastWaterPumpCheck = 0;
 unsigned long lastSensorRead = 0;
 unsigned long lastHTTPPost = 0;
 unsigned long deviceStartTimes[6] = {0};
+unsigned int8_t wifiRetryCount = 0;
+bool wifiConnected = false;
 bool deviceActive[6] = {false};
 
 // Sensor Readings

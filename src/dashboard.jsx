@@ -140,7 +140,6 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, [baseUrl, sensorData, fetchInterval]);
 
-  // Rest of the component remains exactly the same...
   const factors = [
     {
       name: "Soil Temp",
@@ -184,7 +183,6 @@ const Dashboard = () => {
     },
   ];
 
-  // Rest of the JSX remains exactly the same...
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const factor = factors.find(
