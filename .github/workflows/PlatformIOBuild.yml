@@ -11,8 +11,8 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: |
-            ~/NodeMcuCode/.cache/pip
-            ~/NodeMcuCode/.platformio/.cache
+            ~/.cache/pip
+            ~/.platformio/.cache
           key: ${{ runner.os }}-pio
       - uses: actions/setup-python@v5
         with:
@@ -20,4 +20,4 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
       - name: Build PlatformIO Project
-        run: cd ~/NodeMcuCode && pio run -v
+        run: pwd && ls && cd ~/NodeMcuCode && pio run -v
