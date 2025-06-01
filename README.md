@@ -1,10 +1,14 @@
 # FUNDAMENTAL RESEARCH <br> AGROBIOSYNC: INTELLIGENT ORGANIC CULTIVATION
+
 [![PlatformIO Build](https://github.com/FabioCanavarro/AgroBioSync/actions/workflows/PlatformIOBuild.yml/badge.svg)](https://github.com/FabioCanavarro/AgroBioSync/actions/workflows/PlatformIOBuild.yml)
 [![Vite Build](https://github.com/FabioCanavarro/AgroBioSync/actions/workflows/ViteBuild.yml/badge.svg)](https://github.com/FabioCanavarro/AgroBioSync/actions/workflows/ViteBuild.yml)
+
 AgroBioSync is a fundamental research project created by my team of highly trained individuals:), and is used to automate farming and giving a greener altrenative for farmers.
 The product consist of 2 main subproduct:
 - The Machine
-- The Organic Fertilizer
+- The Organic Fertilizer <br>
+
+
 
 ## Features
 - Web interface
