@@ -27,7 +27,12 @@ command:
 #define WATER_PUMP_PIN D8 // Water pump pin
 #define FERTILIZER_PIN D7 // Fertilizer pump pin
 #define GROW_LIGHT_PIN D0 // Grow light pin
-#define KILL_SWITCH_PIN D1 // Kill switch pin
+// #define KILL_SWITCH_PIN D1 // Kill switch pin
+//! The kill switch, will be switched so that
+//! All of the feedback mechanism gains their 
+//! power from 1 source
+#define RESET_BUTTON_PIN D1 // Wifi reset button pin
+#define LED_PIN D2 // LED pin for status indication
 
 // Sensor Setup
 DHT dht(DHTPIN, DHT22);
@@ -42,18 +47,19 @@ const uint8_t TARGET_MOISTURE = 45; // Should result in a percentage so doing th
 const uint8_t WIFI_RETRY_LIMIT = 5; // Should result in a percentage so doing this for reduced size
 
 // Hygrometer Calibration Values
-const int HYGROMETER_AIR_VALUE = 561;   // Reading in air
-const int HYGROMETER_WATER_VALUE = 310; // Reading in water
+const uint16_t HYGROMETER_AIR_VALUE = 561;   // Reading in air
+const uint16_t HYGROMETER_WATER_VALUE = 310; // Reading in water
 
-// Timing Constants (milliseconds)
-const unsigned long FERTILIZER_INTERVAL_HOURS = 72;
-const unsigned long FERTILIZER_SPRAY_DURATION = 900; // 0.9 seconds
-const unsigned long WATER_SPRAY_DURATION = 900;      // 0.9 seconds
-const unsigned long GROW_LIGHT_CHECK_INTERVAL = 200; // 0.2 seconds
-const unsigned long UAH_CHECK_INTERVAL = 200;        // 0.2 seconds
-const unsigned long WATER_PUMP_DURATION = 600;       // 0.6 seconds
-const unsigned long SENSOR_READ_INTERVAL = 2000;     // 2 seconds
-const unsigned long HTTP_POST_INTERVAL = 2000;       // 2 seconds
+// Timing Constants
+const uint8_t FERTILIZER_INTERVAL_HOURS = 72;   // 72 hours
+const uint8_t GROW_LIGHT_CHECK_INTERVAL = 200;  // 0.2 seconds
+const uint8_t UAH_CHECK_INTERVAL = 200;         // 0.2 seconds
+const uint16_t SENSOR_READ_INTERVAL = 2000;     // 2 seconds
+const uint16_t HTTP_POST_INTERVAL = 2000;       // 2 seconds
+const uint16_t BUTTON_PRESS_DURATION = 5000;    // 5 seconds
+const uint16_t FERTILIZER_SPRAY_DURATION = 900; // 0.9 seconds
+const uint16_t WATER_SPRAY_DURATION = 900;      // 0.9 seconds
+const uint16_t WATER_PUMP_DURATION = 600;       // 0.6 seconds
 
 // Timer Variables
 unsigned long lastFertilizerTime = 0;
@@ -64,7 +70,8 @@ unsigned long lastWaterPumpCheck = 0;
 unsigned long lastSensorRead = 0;
 unsigned long lastHTTPPost = 0;
 unsigned long deviceStartTimes[6] = {0};
-int8_t wifiRetryCount = 0;
+unsigned long buttonPressDuration = 0;
+uint8_t wifiRetryCount = 0;
 bool wifiConnected = false;
 bool deviceActive[6] = {false};
 
