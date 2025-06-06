@@ -20,14 +20,13 @@ command:
 #include <DallasTemperature.h>
 
 // Pin Definitions for NodeMCU v3 Lolin
-#define DHTPIN D3         // DHT22 data pin
-#define HYGROMETER_PIN D6 // Soil moisture sensor pin
+#define DHTPIN D3        // DHT22 data pin
+#define HYGROMETER_PIN A0 // Soil moisture sensor pin
 #define DS18B20_PIN D4    // Temperature sensor pin
-#define UAH_PIN D5        // Ultrasonic Atomizer Humidifier pin
+#define UAH_PIN D5        //:w Ultrasonic Atomizer Humidifier pin
 #define WATER_PUMP_PIN D8 // Water pump pin
 #define FERTILIZER_PIN D7 // Fertilizer pump pin
 #define GROW_LIGHT_PIN D0 // Grow light pin
-#define KILL_SWITCH_PIN D1 // Kill switch pin
 
 // Sensor Setup
 DHT dht(DHTPIN, DHT22);
@@ -38,7 +37,7 @@ DallasTemperature sensors(&oneWire);
 const uint16_t TARGET_AIR_TEMP = 21;
 const uint16_t TARGET_SOIL_TEMP = 23;
 const uint8_t TARGET_HUMIDITY = 65; // Should result in a percentage so doing this for reduced size
-const uint8_t TARGET_MOISTURE = 45; // Should result in a percentage so doing this for reduced size
+const uint8_t TARGET_MOISTURE = 20; // Should result in a percentage so doing this for reduced size
 const uint8_t WIFI_RETRY_LIMIT = 5; // Should result in a percentage so doing this for reduced size
 
 // Hygrometer Calibration Values
@@ -235,23 +234,23 @@ float readSoilTemperature()
  */
 int readSoilMoisture()
 {
-    int rawValue = analogRead(HYGROMETER_PIN);
-    int percentage = map(rawValue, HYGROMETER_AIR_VALUE, HYGROMETER_WATER_VALUE, 0, 100);
-    return (rand() % 30) + 40;
+    float rawValue = analogRead(HYGROMETER_PIN);
+    float valx = rawValue/ 1024.0;
+    float percentage = (1 - valx) * 100;
+    return percentage;
 }
-
-/**
+/*
  * @brief Checks if the kill switch is active
  *
  * This function reads the state of the kill switch pin and returns true if the
  * switch is active (HIGH), false otherwise.
  *
  * @return bool: true if kill switch is active, false otherwise
- */
 bool isKillSwitchActive()
 {
     return digitalRead(KILL_SWITCH_PIN) == HIGH;
 }
+*/
 
 /**
  * @brief Reads temperature and humidity using DHT22 sensor
@@ -294,7 +293,8 @@ void readSensors()
  */
 void controlDevices()
 {
-    bool killSwitch = isKillSwitchActive();
+    // bool killSwitch = isKillSwitchActive();
+    bool killSwitch = false;
 
     if (killSwitch) {
         Serial.println("Important Event: Kill switch activated");
@@ -334,13 +334,13 @@ void controlDevices()
         {
             deviceActive[1] = true;
             deviceStartTimes[1] = currentMillis;
-            digitalWrite(WATER_PUMP_PIN, LOW);
+            digitalWrite(WATER_PUMP_PIN, HIGH);
             Serial.println("Important Event: Starting water spray");
         }
         else if (currentMillis - deviceStartTimes[1] >= WATER_SPRAY_DURATION)
         {
             deviceActive[1] = false;
-            digitalWrite(WATER_PUMP_PIN, HIGH);
+            digitalWrite(WATER_PUMP_PIN, LOW);
             Serial.println("Important Event: Water spray complete");
         }
     }
