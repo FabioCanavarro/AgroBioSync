@@ -189,6 +189,7 @@ void setupWiFi()
                 Serial.println("Warning: Failed to connect to WiFi, retrying...");
                 wifiConnected = false;
                 wifiRetryCount +=1;
+                delay(2000);
                 continue;
             }
             else
