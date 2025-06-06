@@ -27,7 +27,7 @@ command:
 #define WATER_PUMP_PIN D8 // Water pump pin
 #define FERTILIZER_PIN D7 // Fertilizer pump pin
 #define GROW_LIGHT_PIN D0 // Grow light pin
-// #define KILL_SWITCH_PIN D1 // Kill switch pin
+#define KILL_SWITCH_PIN A0 // Kill switch pin
 //! The kill switch, will be switched so that
 //! All of the feedback mechanism gains their 
 //! power from 1 source
@@ -42,9 +42,10 @@ DallasTemperature sensors(&oneWire);
 // Environmental Thresholds
 const uint16_t TARGET_AIR_TEMP = 21;
 const uint16_t TARGET_SOIL_TEMP = 23;
-const uint8_t TARGET_HUMIDITY = 65; // Should result in a percentage so doing this for reduced size
-const uint8_t TARGET_MOISTURE = 45; // Should result in a percentage so doing this for reduced size
-const uint8_t WIFI_RETRY_LIMIT = 5; // Should result in a percentage so doing this for reduced size
+const uint8_t TARGET_HUMIDITY = 65; 
+const uint8_t TARGET_MOISTURE = 45; 
+const uint8_t WIFI_RETRY_LIMIT = 5; 
+const uint16_t KILL_SWITCH_VOLATGE_THRESHOLD = 700; // Voltage threshold for kill switch activation
 
 // Hygrometer Calibration Values
 const uint16_t HYGROMETER_AIR_VALUE = 561;   // Reading in air
@@ -74,6 +75,7 @@ unsigned long buttonPressDuration = 0;
 uint8_t wifiRetryCount = 0;
 bool wifiConnected = false;
 bool deviceActive[6] = {false};
+bool buttonResetActive = false;
 
 // Sensor Readings
 struct SensorData
@@ -100,6 +102,28 @@ void readSensors();
 void controlDevices();
 void sendDataToServer();
 bool isKillSwitchActive();
+bool isButtonPressedForDuration();
+
+bool isButtonPressedForDuration()
+{
+    if ((digitalRead(RESET_BUTTON_PIN) == HIGH) && (!buttonResetActive))
+    {
+        if (buttonPressDuration == 0)
+        {
+            buttonPressDuration = millis();
+        }
+        else if ((millis() - buttonPressDuration) >= BUTTON_PRESS_DURATION)
+        {
+            buttonPressDuration = 0;
+            return true;
+        }
+    }
+    else
+    {
+        buttonPressDuration = 0; // Reset if button is released
+    }
+    return false;
+}
 
 void setup()
 {
@@ -132,6 +156,16 @@ void loop()
     // Control devices based on sensor readings
     controlDevices();
 
+    if (isButtonPressedForDuration())
+    {
+        Serial.println("Important Event: Resetting WiFi settings and restarting ESP...");
+        digitalWrite(LED_PIN, HIGH); // Turn on LED to indicate reset
+    }
+    else
+    {
+        digitalWrite(LED_PIN, LOW); // Turn off LED if button is not pressed
+    }
+
     // Send data to server
     if (currentMillis - lastHTTPPost >= HTTP_POST_INTERVAL)
     {
@@ -158,12 +192,15 @@ void initializePins()
     pinMode(WATER_PUMP_PIN, OUTPUT);
     pinMode(FERTILIZER_PIN, OUTPUT);
     pinMode(UAH_PIN, OUTPUT);
+    pinMode(RESET_BUTTON_PIN, INPUT);
+    pinMode(LED_PIN, OUTPUT);
 
     // Set initial states (HIGH is OFF for pumps)
     digitalWrite(FERTILIZER_PIN, HIGH);
     digitalWrite(WATER_PUMP_PIN, HIGH);
     digitalWrite(GROW_LIGHT_PIN, LOW);
     digitalWrite(UAH_PIN, LOW);
+    digitalWrite(LED_PIN, LOW);
 }
 
 /**
@@ -257,7 +294,7 @@ int readSoilMoisture()
  */
 bool isKillSwitchActive()
 {
-    return digitalRead(KILL_SWITCH_PIN) == HIGH;
+    return analogRead(KILL_SWITCH_PIN) > KILL_SWITCH_VOLATGE_THRESHOLD;
 }
 
 /**
