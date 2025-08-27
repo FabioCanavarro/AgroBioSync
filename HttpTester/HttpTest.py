@@ -18,6 +18,9 @@ for _ in range(109):
     headers = {"Content-Type": "application/json"}
 
     response = requests.post(url, headers=headers, json=payload)
+    print(payload)
     print(f"Status Code: {response.status_code}")
     print(f"Response: {response.text}")
     time.sleep(0.4)
+
+
